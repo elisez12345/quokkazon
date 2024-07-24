@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2>Products for sale:</h2>
+<script>
+  $(document).ready(function(){
+    $('#sortable').DataTable({
+      "bFilter": false,  // Remove the search input and button
+      "oLanguage": {     // Customize the language and text
+        "sInfo": "Displaying _START_ to _END_ of _TOTAL_ entries",
+        "sInfoEmpty": "Showing 0 to 0 of 0 entries",
+        "sEmptyTable": "No data available in table"
+      }
+    });
+  });
+</script>
+<style>
+  #sortable {
+    margin-bottom: 25px;  /* Add margin-bottom */
+  }
+</style>
+<div style="margin-bottom: 25px;">
+  <table class='table table-hover table-bordered container' id='sortable'>
+    <thead class="quokka-brown">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Prices</th>
+        <th scope="col">Add To Wishlist</th>
+        <th scope="col">View Sellers</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in items%}
+        <tr>
+          <td>{{product.pid}}</td>
+          <td><a href="{{ url_for('products.product_detail', product_id=product.pid,option=0) }}">{{product.name}}</a></td>
+          <td>
+            {% if product.pid in product_prices %}
+              {%for price in product_prices[product.pid]%}
+                ${{ price }}
+              {% endfor %}
+            {% else %}
+              Not in stock
+            {% endif %}
+            {% if product.pid in summary %}
+            <p>Rating: {{summary[product.pid][0]}} by {{summary[product.pid][1]}} users</p>
+            {% endif %}
+          </td>
+          {% if current_user.is_authenticated %}
+          <td>
+            <form action="{{ url_for('wishlist.wishlist_add', product_id=product.pid) }}"
+                  method="POST">
+                  <input type="submit" value="Add to Wishlist"/> 
+            </form>
+            {% if is_seller%}
+            <form action="{{ url_for('inventory.add', product_id=product.pid) }}" method="POST">
+              <input type="submit" value="Add to Inventory"/> 
+            </form>
+            {% endif %}
+          </td>
+          <td>
+            <form action="{{ url_for('cart.cart_select', product_id=product.pid)}}"
+                  method="POST">
+                  <input type="submit" value="View"/> 
+            </form>
+          </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

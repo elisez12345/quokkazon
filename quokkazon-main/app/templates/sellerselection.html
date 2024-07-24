@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+<h2>Available Sellers:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="quokka-brown">
+    <tr>
+      <th scope="col">Seller ID</th>
+      <th scope="col">Price</th>
+      <th scope="col">Add to Cart</th>
+      <!-- <th scope="col">Manage Feedback</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for seller in sellers %}
+      <tr>
+        <td>{{seller.sid}}</td>
+        <td>{{seller.price}}</td>
+        <td>
+            <form action="{{ url_for('cart.cart_add', product_id=seller.pid, seller_id=seller.sid, quantity=1, saved_for_later=0)}}"
+            method="POST">
+            <input type="hidden" name="product_id" value="{{seller.pid}}"/> 
+            <input type="hidden" name="quantity" value="1"/> 
+            <input type="hidden" name="saved_for_later" value="0"/> 
+            <input type="submit" value="+"/> 
+            </form>
+        </td>
+        <!-- <td>
+          <form action="{{ url_for('feedback.seller_submission_form', seller_id=seller.pid) }}"
+          method="POST">
+          <input type="submit" value="+"/> 
+          </form>
+        </td> -->
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see sellers!</p>
+{% endif %}
+
+{% endblock %}

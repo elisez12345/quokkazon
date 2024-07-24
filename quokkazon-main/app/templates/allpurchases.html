@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+    Enter User ID: <input type="text" name="uid">
+    <input type="submit" value="Fetch Purchases">
+</form>
+
+<table class='table table-hover table-bordered container'>
+    <thead class="quokka-brown">
+        <tr>
+            <th scope="col">Order ID</th>
+            <th scope="col">Seller ID</th>
+            <th scope="col">Product ID</th>
+            <th scope="col">Time Purchased</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Date Fulfilled</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for purchase in purchases %}
+        <tr>
+            <td>{{ purchase.order_id }}</td>
+            <td>{{ purchase.sid }}</td>
+            <td>{{ purchase.pid }}</td>
+            <td>{{ purchase.time_purchased }}</td>
+            <td>{{ purchase.quantity }}</td>
+            <td>{{ purchase.date_fulfilled }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

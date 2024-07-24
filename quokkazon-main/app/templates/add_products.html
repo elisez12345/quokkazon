@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="{{ url_for('products.add_products')}}" method="POST" enctype="multipart/form-data">
+    <label for="name">Product name:</label>
+    <input type="text" id="name" name="name" required>
+    </br>
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required></textarea>
+    </br>
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image" accept="image/*" required>
+    </br>
+    <label for="altTxt">Alt Text:</label>
+    <input type="text" id="altTxt" name="altTxt" required>
+    </br>
+    <input type="submit" value="Add product">
+</form>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--doctype html-->
+
+<br><br>
+
+<h2>All Feedback for Product {{pid}}: {{name}}</h2>
+{% if current_user.is_authenticated %}
+<div style="text-align:right">
+    <a href="{{ url_for('feedback.my_feedback') }}" type="button" class="btn btn-secondary btn-sm"  >My Feedback History</a>
+    </div>
+{% endif %}
+
+  <style>
+  .dropdown {
+    display: inline-block;
+    position: relative;
+  }
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    overflow: auto;
+    box-shadow: 0px 10px 10px 0px rgba(0,0,0,0.4);
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .dropdown-content a {
+    display: block;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 5px;
+    text-decoration: none;
+  }
+  .dropdown-content a:hover {
+    color: #FFFFFF;
+    background-color: #137a56;
+  }
+  </style>
+
+  <body style="background-color:#ffffff;">
+  
+  <div class="dropdown">
+    <button>Sort By</button>
+    <div class="dropdown-content">
+        <form action="{{ url_for('feedback.product_feedback') }}"
+          method="POST">
+            <input type="hidden" id="pid" name="pid" value="{{pid}}">
+            <input type="hidden" id="name" name="name" value="{{name}}">
+              <input type="submit" value="Date"/> 
+          </form>
+          <form action="{{ url_for('feedback.product_feedback_sorted_rating') }}"
+          method="POST">
+            <input type="hidden" id="pid" name="pid" value="{{pid}}">
+            <input type="hidden" id="name" name="name" value="{{name}}">
+              <input type="submit" value="Rating"/> 
+          </form>
+    </div>
+  </div>
+  
+  <div>
+    <br><p><b>Average Rating: </b> {{summary[0]}} <br>
+    <b>Quantity of Ratings:</b> {{summary[1]}}</p>
+  </div>
+  
+  <br>
+  <div id="products">
+  <table class='table table-hover table-bordered container'>
+    <thead class="quokka-brown">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Review</th>
+        <th scope="col">Time Added or Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in pfeedback %}
+        <tr>
+          <td>{{item.name}}</td>
+          <td>{{item.rating}}</td>
+          <td>{{item.review}}</td>
+          <td>{{humanize_time(item.date_time)}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endblock %}
+  
+  
+  

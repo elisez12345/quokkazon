@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="category-banner">
+  <h2>Categories</h2>
+  <ul>
+      {% for category in categories %}
+          <li><a href="{{ url_for('categories.category_products', category_name=category) }}">{{ category[0] }}</a></li>
+      {% endfor %}
+  </ul>
+</div>
+<br>
+<div style="color: aliceblue; text-align: right; margin-bottom: 25px">
+  {% if current_user.is_authenticated%}
+  {% if is_seller%}
+    <a href="{{ url_for('allpurchases.orders') }}" type="button" class="btn btn-dark">My Orders</a>
+    <a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-dark">My Inventory</a>
+    
+  {% endif %}
+  <a href="{{ url_for('feedback.my_feedback',option=0) }}" type="button" class="btn btn-dark">My Feedback</a>
+  <a href="{{ url_for('profile.my_profile') }}" type="button" class="btn btn-dark">My Profile</a>
+   {% endif %}
+
+
+</div>
+<h2>Products for sale:</h2>
+<script>
+  $(document).ready(function() {
+    $('#sort-button').click(function() {
+      window.location.href = '/products?sort=1'; // Add a sorting parameter to the URL
+    });
+  });
+</script>
+<button id="sort-button">Sort by Price: High-low</button>
+<div class="card-container">
+    {% for product in items %}
+      <div class="card">
+        <div class="card-body">
+          <img class = "card-image" src="{{url_for('static', filename=product.image)}}" alt="default" />
+          <h5 class="card-title">Product ID: {{ product.pid }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            <a href="{{ url_for('products.product_detail', product_id=product.pid,option=0) }}">{{ product.name }}</a>
+          </h6>
+          <p class="card-text">
+            {% if product.pid in product_prices %}
+              {% for price in product_prices[product.pid] %}
+                ${{ price }}<br>
+              {% endfor %}
+            {% else %}
+              Not in stock
+            {% endif %}
+            {% if product.pid in summary %}
+            <p>Rating: {{summary[product.pid][0]}} by {{summary[product.pid][1]}} users</p>
+          {% endif %}
+          </p>
+          {% if current_user.is_authenticated %}
+            <form action="{{ url_for('wishlist.wishlist_add', product_id=product.pid) }}" method="POST">
+              <input type="submit" value="Add to Wishlist">
+            </form>
+            {% if is_seller%}
+            <form action="{{ url_for('inventory.add', product_id=product.pid) }}" method="POST">
+              <input type="submit" value="Add to Inventory"/> 
+            </form>
+            {% endif %}
+            <form action="{{ url_for('cart.cart_select', product_id=product.pid) }}" method="POST">
+              <input type="submit" value="View">
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      {% if loop.index % 4 == 0 %}
+        <div class="clearfix"></div> <!-- Add clearfix every 4 cards to start a new row -->
+      {% endif %}
+    {% endfor %}
+  </div>
+  <div class = "pagination" >
+    {% if total_pages > 1%}
+      {% if page > 1 %}
+        <a id="page" href="{{ url_for('products.products', page=page-1)}}">Previous Page</a>
+      {% endif %}
+
+      {% for p in range(page, total_pages + 1) %}
+        {% if p == page %}
+          <span> {{ p }}</span>
+        {% else %}
+          <a id="page" href="{{ url_for('products.products', page=p)}}">{{ p }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page < total_pages %}
+        <a id="page" href="{{ url_for('products.products', page=page+1)}}"> Next page</a>
+      {% endif %}
+    {% endif %}
+  </div>
+
+{% endblock %}

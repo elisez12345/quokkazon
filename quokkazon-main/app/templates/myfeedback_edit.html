@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<head>
+    <style>
+    textarea {
+        height: 100%;
+        width: 800px;
+
+    }
+    </style>
+</head>
+<body>   
+<br><br>
+<div style="text-align:right">
+    <a href="{{ url_for('feedback.my_feedback',option=0) }}" type="button" class="btn btn-secondary btn-sm"  >My Feedback History</a>
+    </div>
+
+<!-- Product Feedback Editing Page -->
+{% for item in pfeedback %}
+<h3>My Feedback for Product {{item.pid}}: {{item.name}}</h3>
+
+<form action="{{ url_for('feedback.product_remove_feedback',product_id=item.pid) }}"
+                method="POST">
+                <input type="submit" value="Delete"/> 
+</form>
+<br>
+
+
+<p>Time Updated: {{item.date_time}}</p>
+<p><b>Current Rating</b>: {{item.rating}} <br>  
+<em>New Rating:</em><br>
+<form action="{{ url_for('feedback.product_rating_edit') }}" method="POST">
+    <input type="number" name="rating" id="rating">
+    <input type="hidden" id="pid" name="pid" value="{{item.pid}}">
+    <input type="submit" value="Submit"> 
+    </form>
+</p>
+
+
+<p><b>Review</b>:
+</p>
+<form action="{{ url_for('feedback.product_review_edit') }}" method="POST" class="my_button">
+ <textarea id="review" name="review" rows="4" cols="50">{{item.review}}</textarea>
+ <input type="hidden" id="pid" name="pid" value="{{item.pid}}">
+<br><input type="submit" value="Submit"> 
+    </form>
+<form action="{{ url_for('feedback.product_remove_review') }}"
+method="POST">
+    <input type="hidden" id="pid" name="pid" value="{{item.pid}}">
+    <input type="submit" value="Delete Review"/> 
+</form>
+<br><br>
+</body>
+{% endfor %}
+
+
+<!-- Seller Feedback Editing Page -->
+{% for item in sfeedback %}
+<h3>My Feedback for Seller {{item.sid}}: {{item.name}}</h3>
+<form action="{{ url_for('feedback.seller_remove_feedback') }}"
+                method="POST">
+                <input type="hidden" id="sid" name="sid" value="{{item.sid}}">
+                <input type="submit" value="Delete"/> 
+</form>
+<p>Time Updated: {{item.date_time}}</p>
+<p><b>Current Rating</b>: {{item.rating}} <br>  
+<em>New Rating:</em><br>
+<form action="{{ url_for('feedback.seller_rating_edit') }}" method="POST">
+    <input type="number" name="rating" id="rating">
+    <input type="hidden" id="sid" name="sid" value="{{item.sid}}">
+    <input type="submit" value="Submit"> 
+    </form>
+</p>
+
+
+<p><b>Review</b>:</p>
+<br>
+<form action="{{ url_for('feedback.seller_review_edit') }}" method="POST">
+ <textarea id="review" name="review" rows="4" cols="50">{{item.review}}</textarea>
+ <input type="hidden" id="sid" name="sid" value="{{item.sid}}">
+<br><input type="submit" value="Submit"> 
+    </form>
+<form action="{{ url_for('feedback.seller_remove_review',seller_id=item.sid) }}"
+method="POST">
+    <input type="hidden" id="sid" name="sid" value="{{item.sid}}">
+    <input type="submit" value="Delete Review"/> 
+</form>
+</body>
+{% endfor %}
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your feedback!</p>
+
+{% endif %}
+  {% endblock %}
+  
+  
+  

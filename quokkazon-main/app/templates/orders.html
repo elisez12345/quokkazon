@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated and is_seller %}
+<br>
+<div style="color: aliceblue; text-align: right; margin-bottom: 25px">
+    <a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-dark">My Inventory</a>
+</div>
+    <h2>My Orders:</h2>
+    <style>
+        .dropdown {
+          display: inline-block;
+          position: relative;
+        }
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          width: 100%;
+          overflow: auto;
+          box-shadow: 0px 10px 10px 0px rgba(0,0,0,0.4);
+        }
+        .dropdown:hover .dropdown-content {
+          display: block;
+        }
+        .dropdown-content a {
+          display: block;
+          background-color: #ffffff;
+          color: #000000;
+          padding: 5px;
+          text-decoration: none;
+        }
+        .dropdown-content a:hover {
+          color: #FFFFFF;
+          background-color: #137a56;
+        }
+        </style>
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+      <script>
+        $(document).ready(function(){ $('#sortable').DataTable(); });
+      </script>
+    <table class='table table-hover table-bordered container compact' id="sortable">
+        <thead class="quokka-brown">
+            <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Customer Info</th>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Order Placed</th>
+                <th scope="col">Date Fulfilled</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.order_id }}</td>
+                <td>{{ user_class.get(order.uid).firstname + ' ' + user_class.get(order.uid).lastname}}<br>
+                    {{ user_class.get(order.uid).email }}<br>
+                    {{ user_class.get(order.uid).address }}
+                </td>
+                <td>{{ product_class.get(order.pid).name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.time_purchased }}</td>
+            {% if order.date_fulfilled %}
+                <td>{{ order.date_fulfilled }}</td>
+            {% else %}
+                <td>
+                    <form action="{{ url_for('allpurchases.fulfill', uid=order.uid, sid=current_user.id, pid=order.pid, oid=order.order_id) }}"
+                    method="POST"
+                    style="display:inline-block">
+                    <input type="submit" value="Fulfilled?"/> 
+                    </form>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <br><br><p align="center">Only sellers can view their orders!</p>
+{% endif %}
+
+{% endblock %}

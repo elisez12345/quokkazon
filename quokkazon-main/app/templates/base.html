@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Mini Amazon</title>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+  <div class="sidenav">
+    {% block msg %}
+      <img class = "header-quokka" src="/static/images/banner.jpg" alt = "5 images of quokkas smiling and eating" width="1280" height = "200">
+      <br><br>
+      <header>
+        <div class = "header-content">
+          <h3 style="color:rgb(255, 255, 255)"><a href="{{ url_for('index.index') }}" style = "color: white;">Quokkazon</a></h3>
+          <form action="{{ url_for('products.search_results') }}" method="POST" class="search-form">
+            <input class="long-search-input" type="text" name="search_term" value="{{ search_term }}" placeholder=" Search for a product">
+            <button type="submit" class="btn btn-light custom-right-border-radius">
+                <i class="fas fa-search"></i> 
+            </button>
+        </form>
+          <div style="color: aliceblue; text-align: right;">
+            {% if current_user.is_authenticated %}
+              Hello {{current_user.firstname}}! <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
+              <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">Cart</a>
+            {% else %}
+              <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
+            {% endif %}
+          </div>
+      </div>
+    </header>
+    {% endblock %}
+  </div>
+  <div class="main">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+
+</html>

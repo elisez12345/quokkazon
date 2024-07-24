@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<head>
+    <style>
+    textarea {
+        height: 100%;
+        width: 800px;
+
+    }
+    </style>
+</head>
+<body>   
+<br><br>
+<div style="text-align:right">
+    <a href="{{ url_for('feedback.my_feedback',option=0) }}" type="button" class="btn btn-secondary btn-sm"  >My Feedback History</a>
+    </div>
+
+<!-- Product Feedback Editing Page -->
+{% if type == "product" %}
+<h4>My Feedback for Product {{product_id}}: {{name}}</h4>
+<form action="{{ url_for('feedback.product_add_feedback') }}" method="POST">
+    <label id="rating">Rating:</label>
+    <input type="number" name="rating" id="rating" REQUIRED>
+    <input type="hidden" id="pid" name="pid" value="{{product_id}}">
+    <br>
+    <label id="review">Review:</label>
+    <br>
+    <textarea id="review" name="review" rows="4" cols="50"></textarea>
+    <input type="submit" value="Submit"> 
+    </form>
+{% elif type == "seller" %}
+<h4>My Feedback for Seller {{seller_id}}: {{name}}</h4>
+<form action="{{ url_for('feedback.product_add_feedback') }}" method="POST">
+    <label id="rating">Rating:</label>
+    <input type="number" name="rating" id="rating" REQUIRED>
+    <input type="hidden" id="sid" name="sid" value="{{seller_id}}">
+    <br>
+    <label id="review">Review:</label>
+    <br>
+    <textarea id="review" name="review" rows="4" cols="50"></textarea>
+    <input type="submit" value="Submit"> 
+    </form>
+
+<br><br>
+</body>
+{% endif %}
+
+{% endif %}
+  {% endblock %}
+  
+  
+  
